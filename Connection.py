@@ -2,6 +2,7 @@
 Created by Shinrod at 08/05/2020
 """
 from Node import Node
+from Params import WEIGHT_LOWER_BOUND, WEIGHT_UPPER_BOUND
 import numpy as np
 
 
@@ -12,29 +13,42 @@ class Connection:
     As decribed in http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf (Fig. 2)
     """
 
-    # Todo : Make sure weight and id are well used here
-    def __init__(self, input : Node, output : Node, id = None):
+    # Todo : Make sure weight and innovation_number are well used here
+    def __init__(self, node_in : Node, node_out : Node, weight = None, innovation_number = None):
         """
         Make a new Connection between two Nodes
 
-        :param input: input Node
-        :param output: output Node
+        :param node_in: input Node
+        :param node_out: output Node
         """
-        self.input = input
-        self.input = output
-        # Random weight between -1 and 1
-        self.weight = 2 * np.random.rand() - 1
+        self.node_in = node_in
+        self.node_in.outward_connections.append(self)
+        self.node_out = node_out
+
+        if weight is None:
+            self.randomize_weight()
+        else:
+            self.weight = weight
+
         self.enabled = True
-        self.id = id
+        self.innovation_number = innovation_number
 
     def weight_mutation(self):
         # Todo : fill here
         pass
 
+    def randomize_weight(self):
+        """
+        Change the weight for a random weight between Params.WEIGHT_LOWER_BOUND and Params.WEIGHT_UPPER_BOUND
+
+        :return: None
+        """
+        self.weight = (WEIGHT_UPPER_BOUND - WEIGHT_LOWER_BOUND) * np.random.rand() + WEIGHT_LOWER_BOUND
+
 
 if __name__ == '__main__':
-    node0 = Node(Node.SENSOR)
-    node1 = Node(Node.OUTPUT)
+    node0 = Node(Node.SENSOR, 0)
+    node1 = Node(Node.OUTPUT, 1)
     con0 = Connection(node0, node1)
     con1 = Connection(node0, node1)
     print(con0.weight)
