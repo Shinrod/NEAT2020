@@ -45,7 +45,18 @@ class Population:
             self.demography = __other.demography
             self.people = [genome.clone() for genome in __other.people]
 
+    # ----------------------------------------------- GENETIC ----------------------------------------------------------
+    def mutate(self):
+        """
+        Mutate all the Genome in the Population
 
+        :return:
+        """
+        innovation_history = []
+        for genome in self.people:
+            genome.mutate(innovation_history)
+
+    # ------------------------------------------------ TOOL ------------------------------------------------------------
     def clone(self):
         """
         Make a deepcopy of that Population

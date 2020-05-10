@@ -1,7 +1,8 @@
 """
 Created by Shinrod at 08/05/2020
 """
-from Params import SENSOR, HIDDEN, OUTPUT
+from Params import *
+from numpy import e
 
 class Node:
     """
@@ -21,9 +22,29 @@ class Node:
         self.kind = kind
         self.name = name
 
+        self.inward_connections = []
         self.outward_connections = []
 
+        self.value = 0
+        self.triggered = False
 
+    def think(self):
+        """
+        Use the node to make computations
+        """
+        if self.kind != Node.SENSOR:
+            input_sum = 0
+            for con in self.inward_connections:
+                input_sum += con.node_in.value * con.weight
+            self.value = Node.sigmoid(input_sum)
+
+        self.triggered = True
+
+    @staticmethod
+    def sigmoid(x):
+        return 1/(1+e**(-4.9*x))
+
+    # ------------------------------------------------ TOOL ------------------------------------------------------------
     def clone(self):
         """
         Make a copy of that Node
@@ -48,9 +69,16 @@ class Node:
 
         Used by :
         Genome.clone()
+        Connection.__eq__()
 
         :param other: other Node
 
         :return: True if the name between the two is the same, False otherwise
         """
         return self.name == other.name
+
+    def __repr__(self):
+        return self.name
+
+    def __str__(self):
+        return str(self.__repr__())
